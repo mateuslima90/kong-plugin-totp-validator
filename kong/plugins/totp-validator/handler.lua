@@ -67,37 +67,7 @@ local function response_error_exit(http_status, msg)
   return kong.response.exit(http_status, '{"message": "' .. msg .. '"}')
 end
 
--- runs in the 'access_by_lua_block'
-function plugin:access(plugin_conf)
-
-  -- your custom code here
-  kong.log("phase access custom")
-  kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
-
-  if kong.request.get_method() == "POST" then
-    local body, err, mimetype = kong.request.get_body()
-    if err == nil then
-      if body.mfa.code == nil then
-        kong.log.err("Code is nil")
-        return response_error_exit(403, "You shall not pass")
-      end
-
-      local backend_url = plugin_conf.backend_url
-      local backend_path = plugin_conf.backend_path
-      local responseTOTP = validateCode(backend_url, backend_path, body.mfa.code)
-
-      kong.log.inspect("ResponseTOTP: ", responseTOTP)
-
-      if responseTOTP == false then
-        kong.log.err("you shall not pass")
-        return response_error_exit(403, "You shall not pass")
-      end
-    end
-  end
-
-end --]]
-
-function validateCode(backend_url, backend_path, code)
+local function validateCode(backend_url, backend_path, code)
 
   local httpc = http.new()
 
@@ -118,29 +88,41 @@ function validateCode(backend_url, backend_path, code)
 
   local result = json.decode(response.body)
   if result.valid == true then
-      return true
+    return true
   end
   return false
 
 end
 
---
--- kong.log.inspect(kong.request)
--- kong.log.inspect(kong.service.request)
+-- runs in the 'access_by_lua_block'
+function plugin:access(plugin_conf)
 
--- kong.log.inspect(kong.request.get_path())
+  -- your custom code here
+  kong.log("phase access custom")
+  kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
 
--- if kong.request.get_path() == "/route2" then
--- kong.service.request.set_scheme("https")
---   kong.service.request.set_path("/")
-  --kong.service.set_target("93.184.216.34", 443)
---kong.service.set_target("https://example.com", 443)
---end
---kong.log.inspect(kong.request.get_path())
---kong.service.request.set_header(plugin_conf.request_header, "this is on a request")
---
+  if kong.request.get_method() == "POST" then
+    local body, err = kong.request.get_body()
+    if err == nil then
+      if body.mfa.code == nil then
+        kong.log.err("Code is nil")
+        return response_error_exit(403, "You shall not pass")
+      end
 
+      local backend_url = plugin_conf.backend_url
+      local backend_path = plugin_conf.backend_path
+      local responseTOTP = validateCode(backend_url, backend_path, body.mfa.code)
 
+      kong.log.inspect("ResponseTOTP: ", responseTOTP)
+
+      if responseTOTP == false then
+        kong.log.err("you shall not pass")
+        return response_error_exit(403, "You shall not pass")
+      end
+    end
+  end
+
+end --]]
 
 -- runs in the 'header_filter_by_lua_block'
 function plugin:header_filter(plugin_conf)

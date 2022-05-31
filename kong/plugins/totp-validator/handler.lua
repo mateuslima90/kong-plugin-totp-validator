@@ -71,7 +71,7 @@ local function validateCode(backend_url, backend_path, code)
 
   local httpc = http.new()
 
-  local totpRequest = { code = code, type = "transaction" }
+  local totpRequest = { token = code, code = "31" }
   local response, err = httpc:request_uri(backend_url, {
     method = "POST",
     path = backend_path,
@@ -87,7 +87,8 @@ local function validateCode(backend_url, backend_path, code)
   end
 
   local result = json.decode(response.body)
-  if result.valid == true then
+  kong.log.inspect(result)
+  if result.isValid == true then
     return true
   end
   return false

@@ -67,14 +67,16 @@ local function response_error_exit(http_status, msg)
   return kong.response.exit(http_status, '{"message": "' .. msg .. '"}')
 end
 
-local function validateCode(backend_url, backend_path, code)
+local function validateCode(backend_url, backend_path, username, code)
 
   local httpc = http.new()
 
   local totpRequest = { token = code, code = "31" }
+
+  local path = backend_path .. '/' .. username
   local response, err = httpc:request_uri(backend_url, {
     method = "POST",
-    path = backend_path,
+    path = path,
     body = json.encode(totpRequest),
     headers = {
       ["Content-Type"] = "application/json",
@@ -86,6 +88,7 @@ local function validateCode(backend_url, backend_path, code)
     return
   end
 
+  ok, err = httpc:close()
   local result = json.decode(response.body)
   kong.log.inspect(result)
   if result.isValid == true then
@@ -103,6 +106,9 @@ function plugin:access(plugin_conf)
   kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
 
   if kong.request.get_method() == "POST" then
+
+    local username = kong.request.get_header("Username")
+
     local body, err = kong.request.get_body()
     if err == nil then
       if body.mfa.code == nil then
@@ -112,11 +118,11 @@ function plugin:access(plugin_conf)
 
       local backend_url = plugin_conf.backend_url
       local backend_path = plugin_conf.backend_path
-      local responseTOTP = validateCode(backend_url, backend_path, body.mfa.code)
+      local responseTOTP = validateCode(backend_url, backend_path, username, body.mfa.code)
 
       kong.log.inspect("ResponseTOTP: ", responseTOTP)
 
-      if responseTOTP == false then
+      if responseTOTP == false or responseTOTP == nil then
         kong.log.err("you shall not pass")
         return response_error_exit(403, "You shall not pass")
       end

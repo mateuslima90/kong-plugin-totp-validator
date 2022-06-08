@@ -69,12 +69,12 @@ end
 
 local function validateCode(backend_url, backend_path, username, code)
 
-  local httpc = http.new()
+  local httpConnection = http.new()
 
   local totpRequest = { token = code, code = "31" }
 
   local path = backend_path .. '/' .. username
-  local response, err = httpc:request_uri(backend_url, {
+  local response, err = httpConnection:request_uri(backend_url, {
     method = "POST",
     path = path,
     body = json.encode(totpRequest),
@@ -88,11 +88,11 @@ local function validateCode(backend_url, backend_path, username, code)
     return
   end
 
-  local _, err = httpc:close()
-  if err ~= nil then
-    kong.log.debug(err)
+  local _, errorHttpC = httpConnection:close()
+  if errorHttpC ~= nil then
+    kong.log.debug(errorHttpC)
   end
-  
+
   local result = json.decode(response.body)
   kong.log.inspect(result)
   if result.isValid == true then

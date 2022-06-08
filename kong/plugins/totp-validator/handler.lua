@@ -88,11 +88,15 @@ local function validateCode(backend_url, backend_path, username, code)
     return
   end
 
-  ok, err = httpc:close()
+  local _, err = httpc:close()
+  if err ~= nil then
+    kong.log.debug(err)
+  end
+  
   local result = json.decode(response.body)
   kong.log.inspect(result)
   if result.isValid == true then
-    return true
+  return true
   end
   return false
 

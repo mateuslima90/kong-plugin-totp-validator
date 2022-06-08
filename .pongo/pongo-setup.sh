@@ -1,0 +1,35 @@
+
+luarocks install lunajson
+
+export KONG_DATABASE=off
+export KONG_DECLARATIVE_CONFIG=/kong-plugin/kong.yml
+
+echo '_format_version: "2.1"
+_transform: true
+services:
+- name: mimic-service
+  url: http://192.168.1.117:8080
+  plugins:
+  - name: totp-validator
+    config:
+      backend_url: http://192.168.1.117:9090
+      backend_path: /totp/validate
+  routes:
+  - name: my-route
+    regex_priority: 200
+    strip_path: false
+    methods: [POST]
+    protocols: [http]
+    paths:
+    - /mimic
+- name: vault-service
+  url: http://192.168.1.117:9090
+  routes:
+  - name: vault-generate-totp
+    strip_path: false
+    methods: [POST]
+    protocols: [http]
+    paths:
+    - /totp/generate/(?<user>\S+)' > kong.yml
+
+

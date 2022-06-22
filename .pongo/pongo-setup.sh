@@ -7,8 +7,12 @@ export KONG_DECLARATIVE_CONFIG=/kong-plugin/kong.yml
 echo '_format_version: "2.1"
 _transform: true
 services:
-- name: mimic-service
-  url: http://192.168.1.117:8080
+- name: httpbin-service
+  url: http://httpbin.org
+  retries: 0
+  connect_timeout: 5000
+  write_timeout: 5000
+  read_timeout: 5000
   plugins:
   - name: totp-validator
     config:
@@ -21,9 +25,13 @@ services:
     methods: [POST]
     protocols: [http]
     paths:
-    - /mimic
+    - /anything
 - name: vault-service
   url: http://192.168.1.117:9090
+  retries: 0
+  connect_timeout: 5000
+  write_timeout: 5000
+  read_timeout: 5000
   routes:
   - name: vault-generate-totp
     strip_path: false

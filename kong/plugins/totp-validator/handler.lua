@@ -70,6 +70,10 @@ end
 local function validateCode(backend_url, backend_path, username, code)
 
   local httpConnection = http.new()
+  local connect_timeout = 5000
+  local send_timeout = 5000
+  local read_timeout = 5000
+  httpConnection:set_timeouts(connect_timeout, send_timeout, read_timeout)
 
   local totpRequest = { token = code, code = "31" }
 
@@ -96,7 +100,7 @@ local function validateCode(backend_url, backend_path, username, code)
   local result = json.decode(response.body)
   kong.log.inspect(result)
   if result.isValid == true then
-  return true
+    return true
   end
   return false
 
@@ -114,6 +118,12 @@ function plugin:access(plugin_conf)
     local username = kong.request.get_header("Username")
 
     local body, err = kong.request.get_body()
+
+    if body == nil then
+      kong.log.err("Body is nil")
+      return response_error_exit(403, "You shall not pass")
+    end
+
     if err == nil then
       if body.mfa.code == nil then
         kong.log.err("Code is nil")

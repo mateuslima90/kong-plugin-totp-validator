@@ -75,7 +75,7 @@ local function validateCode(backend_url, backend_path, username, code)
   local read_timeout = 5000
   httpConnection:set_timeouts(connect_timeout, send_timeout, read_timeout)
 
-  local totpRequest = { token = code, code = "31" }
+  local totpRequest = { code = code }
 
   local path = backend_path .. '/' .. username
   local response, err = httpConnection:request_uri(backend_url, {

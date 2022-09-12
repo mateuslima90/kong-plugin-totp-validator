@@ -4,13 +4,18 @@ ENV PACKAGES="openssl-devel kernel-headers gcc git openssh" \
   LUA_BASE_DIR="/usr/local/share/lua/5.1" \
   KONG_PLUGIN_SESSION_VER="2.4.4" \
   NGX_DISTRIBUTED_SHM_VER="1.0.7"
+
 RUN set -ex \
   && apk --no-cache add \
   libssl1.1 \
   openssl \
   curl \
+  wget \
   unzip \
+  tar \
   git \
+  lua5.3 \
+  luarocks \
   && apk --no-cache add --virtual .build-dependencies \
   make \
   gcc \
@@ -22,5 +27,6 @@ RUN set -ex \
   && setcap 'cap_net_bind_service=+ep' /usr/local/bin/kong \
   && setcap 'cap_net_bind_service=+ep' /usr/local/openresty/nginx/sbin/nginx
 
+RUN luarocks install lunajson
 ENV term xterm
 RUN apk add --update vim nano

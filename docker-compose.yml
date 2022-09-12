@@ -9,7 +9,7 @@ services:
       context: ./
     volumes:
       - ./kong.yml:/tmp/kong-declarative-config.yml
-      - ./kong/plugins/totp-validator:/usr/local/lib/luarocks/rocks-5.1/kong-plugin-totp-validator/1.0.0-1/lua/kong/plugins/kong-plugin-totp-validator
+      - ./kong/plugins/totp-validator:/usr/local/lib/luarocks/rocks-5.1/kong-plugin-totp-validator/0.1.0-1/lua/kong/plugins/kong-plugin-totp-validator
       - ./kong/plugins/totp-validator:/usr/local/share/lua/5.1/kong/plugins/kong-plugin-totp-validator
     environment:
       KONG_DATABASE: "off"

@@ -1,7 +1,7 @@
 local typedefs = require "kong.db.schema.typedefs"
 
 
-local PLUGIN_NAME = "totp-validator"
+local PLUGIN_NAME = "kong-plugin-totp-validator"
 
 
 local schema = {

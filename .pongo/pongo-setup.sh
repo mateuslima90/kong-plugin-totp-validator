@@ -14,7 +14,7 @@ services:
   write_timeout: 5000
   read_timeout: 5000
   plugins:
-  - name: totp-validator
+  - name: kong-plugin-totp-validator
     config:
       backend_url: http://192.168.1.117:9090
       backend_path: /totp/validate

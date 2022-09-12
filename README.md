@@ -1,70 +1,47 @@
 [![Build Status][badge-travis-image]][badge-travis-url]
 
-Kong plugin template
-====================
+# Kong-plugin-totp-validator
 
-This repository contains a very simple Kong plugin template to get you
-up and running quickly for developing your own plugins.
+Generic description of the plugin.
 
-This template was designed to work with the
-[`kong-pongo`](https://github.com/Kong/kong-pongo) and
-[`kong-vagrant`](https://github.com/Kong/kong-vagrant) development environments.
+## The Problem
 
-Please check out those repos `README` files for usage instructions.
+describe the problem that this plugins solves..... and also describes TOTP
 
+## Project Structure
 
-Naming and versioning conventions
-=================================
+The plugin folder should contain at least a `schema.lua` and a `handler.lua`, alongside with a `spec` folder and a `.rockspec` file specifying the current version of the package.
 
-There are a number "named" components and related versions. These are the conventions:
+## Rockspec Format
 
-* *Kong plugin name*: This is the name of the plugin as it is shown in the Kong
-  Manager GUI, and the name used in the file system. A plugin named `my-cool-plugin`
-  would have a `handler.lua` file at `./kong/plugins/my-cool-plugin/handler.lua`.
+The `.rockspec` file should follow [LuaRocks' conventions](https://github.com/luarocks/luarocks/wiki/Rockspec-format)
 
-* *Kong plugin version*: This is the version of the plugin code, expressed in
-  `x.y.z` format (using Semantic Versioning is recommended). This version should
-  be set in the `handler.lua` file as the `VERSION` property on the plugin table.
+## Configuration
 
-* *LuaRocks package name*: This is the name used in the LuaRocks eco system.
-  By convention this is `kong-plugin-[KongPluginName]`. This name is used
-  for the `rockspec` file, both in the filename as well as in the contents
-  (LuaRocks requires that they match).
+### Enabling the plugin on a Route
 
-* *LuaRocks package version*: This is the version of the package, and by convention
-  it should be identical to the *Kong plugin version*. As with the *LuaRocks package
-  name* the version is used in the `rockspec` file, both in the filename as well
-  as in the contents (LuaRocks requires that they match).
+Configure this plugin on a Route with the AdminAPI:
 
-* *LuaRocks rockspec revision*: This is the revision of the rockspec, and it only
-  changes if the rockspec is updated. So when the source code remains the same,
-  but build instructions change for example. When there is a new *LuaRocks package
-  version* the *LuaRocks rockspec revision* is reset to `1`. As with the *LuaRocks
-  package name* the revision is used in the `rockspec` file, both in the filename
-  as well as in the contents (LuaRocks requires that they match).
+```bash
+curl commando to Kong AdminAPI
+```
 
-* *LuaRocks rockspec name*: this is the filename of the rockspec. This is the file
-  that contains the meta-data and build instructions for the LuaRocks package.
-  The filename is `[package name]-[package version]-[package revision].rockspec`.
+Configure this plugin on a Service with the declarative configuration:
 
-Example
--------
+```bash
+enter kong declarative config snippet sample here
+```
 
-* *Kong plugin name*: `my-cool-plugin`
+- list of plugin parameters: parameter description
 
-* *Kong plugin version*: `1.4.2` (set in the `VERSION` field inside `handler.lua`)
+## Developing
 
-This results in:
+### In docker
 
-* *LuaRocks package name*: `kong-plugin-my-cool-plugin`
+```bash
+add docker commands needed
+```
 
-* *LuaRocks package version*: `1.4.2`
+## Credits
 
-* *LuaRocks rockspec revision*: `1`
-
-* *rockspec file*: `kong-plugin-my-cool-plugin-1.4.2-1.rockspec`
-
-* File *`handler.lua`* is located at: `./kong/plugin/my-cool-plugin/handler.lua` (and similar for the other plugin files)
-
-[badge-travis-url]: https://travis-ci.org/Kong/kong-plugin/branches
-[badge-travis-image]: https://travis-ci.com/Kong/kong-plugin.svg?branch=master
+made with :heart: by Kong São Paulo / Brazil Community

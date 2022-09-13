@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "8794f7ff-8e0f-45d9-b0bf-d52530d6b442",
+		"name": "vault-totp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4604253"
+	},
+	"item": [
+		{
+			"name": "vault-totp",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-vault-token",
+						"value": "root",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"generate\": true,\n    \"exported\": true,\n    \"issuer\": \"vault\",\n    \"account_name\": \"mateus\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.64.2:8200/v1/totp/keys/user-mateus",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"64",
+						"2"
+					],
+					"port": "8200",
+					"path": [
+						"v1",
+						"totp",
+						"keys",
+						"user-mateus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vault-totp-generate",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "vault-totp-validate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-vault-token",
+						"value": "root",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"code\": \"797909\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.64.2:8200/v1/totp/code/user-mateus",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"64",
+						"2"
+					],
+					"port": "8200",
+					"path": [
+						"v1",
+						"totp",
+						"code",
+						"user-mateus"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -10,8 +10,9 @@ services:
   plugins:
   - name: kong-plugin-totp-validator
     config:
-      backend_url: http://192.168.1.117:9090
-      backend_path: /totp/validate
+      backend_url: http://vault:8200
+      backend_path: /v1/totp/code
+      vault_token: root
   routes:
   - name: my-route
     regex_priority: 200

@@ -67,7 +67,7 @@ local function response_error_exit(http_status, msg)
   return kong.response.exit(http_status, '{"message": "' .. msg .. '"}')
 end
 
-local function validateCode(backend_url, backend_path, username, code)
+local function validateCode(backend_url, backend_path, vault_token, username, code)
 
   local httpConnection = http.new()
   local connect_timeout = 5000
@@ -77,12 +77,13 @@ local function validateCode(backend_url, backend_path, username, code)
 
   local totpRequest = { code = code }
 
-  local path = backend_path .. '/' .. username
+  local path = backend_path .. "/" .. username
   local response, err = httpConnection:request_uri(backend_url, {
     method = "POST",
     path = path,
     body = json.encode(totpRequest),
     headers = {
+      ["x-vault-token"] = vault_token,
       ["Content-Type"] = "application/json",
     }
   })
@@ -132,7 +133,8 @@ function plugin:access(plugin_conf)
 
       local backend_url = plugin_conf.backend_url
       local backend_path = plugin_conf.backend_path
-      local responseTOTP = validateCode(backend_url, backend_path, username, body.mfa.code)
+      local vault_token = plugin_conf.vault_token
+      local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, body.mfa.code)
 
       kong.log.inspect("ResponseTOTP: ", responseTOTP)
 

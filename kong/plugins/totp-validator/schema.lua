@@ -17,6 +17,7 @@ local schema = {
           -- a standard defined field (typedef), with some customizations
           { backend_url = { type = "string", required = true }, },
           { backend_path = { type = "string", required = true }, },
+          { vault_token = { type = "string", required = true }, },
           { body_code_location = { type = "string", required = false }, },
           { header_code_location = { type = "string", required = false }, }
         },

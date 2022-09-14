@@ -98,12 +98,16 @@ local function validateCode(backend_url, backend_path, vault_token, username, co
     kong.log.debug(errorHttpC)
   end
 
+  kong.log.inspect(response)
   local result = json.decode(response.body)
   kong.log.inspect(result)
-  if result.isValid == true then
+
+  if  response.status == 200 and result.data.valid == true then
     return true
+  else
+    return false
   end
-  return false
+
 
 end
 
@@ -120,6 +124,7 @@ function plugin:access(plugin_conf)
 
     local body, err = kong.request.get_body()
 
+    -- TODO: check in the request contains content-type
     if body == nil then
       kong.log.err("Body is nil")
       return response_error_exit(403, "You shall not pass")

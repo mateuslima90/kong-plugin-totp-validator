@@ -2,7 +2,7 @@ _format_version: "2.1"
 _transform: true
 services:
 - name: httpbin-service
-  url: https://httpbin.org:443
+  url: http://httpbin:80/anything
   retries: 0
   connect_timeout: 5000
   write_timeout: 5000

@@ -51,3 +51,8 @@ services:
     depends_on:
       - vault
     command: vault secrets enable totp
+
+  httpbin:
+    image: kennethreitz/httpbin
+    ports:
+      - "8080:80"

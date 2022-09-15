@@ -13,7 +13,7 @@ services:
       backend_url: http://vault:8200
       backend_path: /v1/totp/code
       vault_token: root
-      body_code_location: mfa_code
+      body_code_location: mfa.code
   routes:
   - name: my-route
     regex_priority: 200

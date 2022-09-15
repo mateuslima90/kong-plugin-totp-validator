@@ -141,12 +141,17 @@ function plugin:access(plugin_conf)
       if body_code_location ~= nil then
         kong.log(" Body sent ::: ")
         kong.log.inspect(body)
-        kong.log.inspect(body["" .. body_code_location])
-        if body[body_code_location] == nil then
+
+        -- playing with loadstring to allow body.level1.level2.code configs
+        local funcstr = "local inner_mfa_code = kong.request.get_body()." .. body_code_location .. "; return inner_mfa_code;"
+        local mfa_attribution = loadstring(funcstr)
+        mfa_code = mfa_attribution()
+        kong.log("MFA CODE UPDATED ::: " .. mfa_code)
+
+        if mfa_code == nil then
           kong.log.err("Code is nil")
           return response_error_exit(403, "You shall not pass")
         end
-        mfa_code = body[body_code_location]
       end
 
       -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)

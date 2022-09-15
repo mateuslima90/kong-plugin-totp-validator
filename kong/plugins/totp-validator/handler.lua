@@ -131,7 +131,31 @@ function plugin:access(plugin_conf)
     end
 
     if err == nil then
-      if body.mfa.code == nil then
+
+      local body_code_location = plugin_conf.body_code_location
+      local header_code_location = plugin_conf.header_code_location
+
+      local mfa_code = nil
+
+      -- if the code is from body, validate it
+      if body_code_location ~= nil then
+        kong.log(" Body sent ::: ")
+        kong.log.inspect(body)
+        kong.log.inspect(body["" .. body_code_location])
+        if body[body_code_location] == nil then
+          kong.log.err("Code is nil")
+          return response_error_exit(403, "You shall not pass")
+        end
+        mfa_code = body[body_code_location]
+      end
+
+      -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)
+      if header_code_location ~= nil then
+        mfa_code = kong.request.get_header(header_code_location)
+      end
+
+      -- if fails here, is because i was unable to obtain code from both header and body
+      if mfa_code == nil then
         kong.log.err("Code is nil")
         return response_error_exit(403, "You shall not pass")
       end
@@ -139,13 +163,13 @@ function plugin:access(plugin_conf)
       local backend_url = plugin_conf.backend_url
       local backend_path = plugin_conf.backend_path
       local vault_token = plugin_conf.vault_token
-      local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, body.mfa.code)
+      local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, mfa_code)
 
       kong.log.inspect("ResponseTOTP: ", responseTOTP)
 
       if responseTOTP == false or responseTOTP == nil then
         kong.log.err("you shall not pass")
-        return response_error_exit(403, "You shall not pass")
+        return response_error_exit(403, "You shall not pass! This code is not valid!")
       end
     end
   end
@@ -157,6 +181,14 @@ function plugin:header_filter(plugin_conf)
 
   -- kong.log.inspect(plugin_conf)
   -- your custom code here, for example;
+  local header_code_location = plugin_conf.header_code_location
+  if header_code_location ~= nil then
+    local mfa_code_from_header = kong.request.get_header(header_code_location)
+    if mfa_code_from_header == nil then
+      kong.log.err("Code is nil")
+      return response_error_exit(403, "You shall not pass")
+    end
+  end
 
   -- kong.log.inspect(kong.request.get_headers())
 

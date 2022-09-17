@@ -6,6 +6,8 @@ Generic description of the plugin.
 
 ## The Problem
 
+Username and password arent enough to guarantee security, so It is common to add a second factor
+authentication
 describe the problem that this plugins solves..... and also describes TOTP
 
 ## Project Structure

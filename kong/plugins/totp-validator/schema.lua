@@ -1,8 +1,6 @@
 local typedefs = require "kong.db.schema.typedefs"
 
-
 local PLUGIN_NAME = "kong-plugin-totp-validator"
-
 
 local schema = {
   name = PLUGIN_NAME,
@@ -19,8 +17,11 @@ local schema = {
           { backend_path = { type = "string", required = true }, },
           { vault_token = { type = "string", required = true }, },
           { body_code_location = { type = "string", required = false }, },
-          { header_code_location = { type = "string", required = false }, }
+          { header_code_location = { type = "string", required = false }, },
         },
+        entity_checks = {
+          { only_one_of = { "body_code_location", "header_code_location" } },
+        }
       },
     },
   },

@@ -1,18 +1,39 @@
-[![Build Status][badge-travis-image]][badge-travis-url]
+<!---  [![Build Status][badge-travis-image]][badge-travis-url] --->
 
 # Kong-plugin-totp-validator
 
-Generic description of the plugin.
+This project is a Lua-based plugin for Kong API Gateway that allows you to define routes and services that requires a valid TOTP code.
+
+The plugins works by intercepting the requests being made and confirmating (with HTTP requests to a TOTP provider like Hashicorp Vault)
+if the code was provided in the defined location (body or header) and if the code provided was already validated by the user.
+
+This plugin was developed and tested under Kong 2.8.1, but it should work on newer releases incluing the new 3.0.0 release.
 
 ## The Problem
 
-Username and password arent enough to guarantee security, so It is common to add a second factor
-authentication
-describe the problem that this plugins solves..... and also describes TOTP
+Username and password arent enough to guarantee security, so it is common to add a second factor authentication (2FA) or multiple factor authentication (MFA).
+
+TOTP means time based one-time password, and is a common form of two-factor authentication. Unique numeric passwords are generated with an
+algorithm that uses the current time as the input. Time-based passwords expire, and therefore offer greater security for 2FA or MFA.
+
+There are also some people that like the idea of using TOTP as an alternative to oauth2 refresh tokens
+(https://blog.devgenius.io/can-totp-be-used-as-an-alternative-to-refresh-tokens-5b992b28e45e).
 
 ## Project Structure
 
-The plugin folder should contain at least a `schema.lua` and a `handler.lua`, alongside with a `spec` folder and a `.rockspec` file specifying the current version of the package.
+This project folder structure:
+
+- `.pongo`: contais base scripts and configuration for Pongo-based integration tests
+- `k6`: a sample load testing script
+- `kong`: the plugin code itself containing a `schema.lua` (the definition of the schema for the expected plugin configuration) and a `handler.lua` (where the plugin logic is implemented)
+- `postman`: Contains a json file with a collection that you can import in Postman with requests pre-configured to perform the basic demonstrations of this plugin funcionallity.
+- `spec`: Contains some unit tests for the plugin.
+
+At the root folder there also a few important files:
+
+- a `.rockspec` file specifying the current version of the package and its dependencies
+- a `kong.yml` with the Kong Declarative Configuration with some services and routes
+- `Dockerfile` and `docker-compose.yml`: scripts to run a demonstration environment using Kong in DB LESS mode and Hashicorp Vault
 
 ## Rockspec Format
 
@@ -20,30 +41,82 @@ The `.rockspec` file should follow [LuaRocks' conventions](https://github.com/lu
 
 ## Configuration
 
-### Enabling the plugin on a Route
-
-Configure this plugin on a Route with the AdminAPI:
-
-```bash
-curl commando to Kong AdminAPI
-```
+### Enabling the plugin on a Service
 
 Configure this plugin on a Service with the declarative configuration:
 
 ```bash
-enter kong declarative config snippet sample here
+_format_version: "2.1"
+_transform: true
+services:
+- name: httpbin-service
+  url: http://httpbin:80
+  retries: 0
+  connect_timeout: 5000
+  write_timeout: 5000
+  read_timeout: 5000
+  plugins:
+  - name: kong-plugin-totp-validator
+    config:
+      backend_url: http://vault:8200
+      backend_path: /v1/totp/code
+      vault_token: root
+      body_code_location: mfa.code
 ```
 
-- list of plugin parameters: parameter description
+You can also configure the plugin directly in a route or using the Kong Admin API when not running Kong in DBLESS mode.
 
-## Developing
+### Plugin configuration parameters
 
-### In docker
+| Parameter name       | Required | Description | Default value | Type   |
+|----------------------|----------|-------------|---------------|--------|
+| backend_url          | true         | Base Url for the TOTP backend (the vault)           |               | String |
+| backend_path         | true         | Base Path for the TOTP backend (the vault)          |               | String |
+| vault_token          | true         | A token for the communication with the TOTP / vault.                |               | String |
+| body_code_location   | false        | If defined , the plugin code will get otp from request.body.<configuration>            |               | String |
+| header_code_location | false        | If defined , the plugin code will get otp from request.headers.<configuration>            |               | String |
+
+IMPORTANT: it is required to configure body_code_location OR header_code_location
+
+## Developing and testing the plugin
+
+### Executing the development environment with docker
 
 ```bash
-add docker commands needed
+docker-compose up --build
 ```
+
+<add prints with the CLI after the container is running>
+
+### Importing the POSTMAN collection and test the plugin
+
+Import the collection (json file located in the postman folder) in Postman, and follow the steps below to execute some real requests and check the plugin behavior:
+
+- start the demo environment using the docker compose command ` docker-compose up --build `
+- open Postman and import the collection
+- make a request to create a user
+- make a login request
+- generate and obtain an otp code
+- validate the otp code
+- make a request to a route, passing a validated OTP code that will be accepted by tha vault and will result in a 200 HTTP status code
+- make a request to a route, passing a non-validated OTP code that will be rejected by tha vault and notice that the request will fail and return 403 status code
+
+![postman/images/img.png](postman/images/img.png)
+
+![postman/images/img_1.png](postman/images/img_1.png)
+
+
+
+## TODO List
+
+This plugin is still evolving, and the next features planned are:
+
+- a configuration to allows the definition of the HTTP status code to be returned in case the user does not send an OTP code
+- a configuration to allows the definition of the HTTP status code to be returned in case the user does not send a VALID OTP code
+- configurations to allows customizations of the error messages and body formats returns by the plugin in the fail cenarios
+- improve the Docker script, to test this plugin with others TOTPs providers
+- add more test cases
 
 ## Credits
 
-made with :heart: by Kong São Paulo / Brazil Community
+made with :heart: by Marcelo Bezerra (linkedin profile link) and Mateus Fonseca (linkedin profile link)

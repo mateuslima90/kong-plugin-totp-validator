@@ -122,7 +122,7 @@ This plugin is still evolving, and the next features planned are:
 - configurations to allows customizations of the error messages and body formats returns by the plugin in the fail scenarios
 - improve the Docker script, to test this plugin with others TOTPs providers
 - add more test cases
-- add more resiliency in the communication beetwen the kong plugin and the OT`P provider (better error handling and some retry logic)
+- add resiliency in the communication beetwen the kong plugin and the OT`P provider (better error handling and some retry logic inspired by Iguana Tools: https://help.interfaceware.com/v6/retry-example)
 
 ## Credits
 

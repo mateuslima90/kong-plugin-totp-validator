@@ -37,7 +37,7 @@ At the root folder there also a few important files:
 
 - a `.rockspec` file specifying the current version of the package and its dependencies
 - a `kong.yml` with the Kong Declarative Configuration with some services and routes
-- `Dockerfile` and `docker-compose.yml`: scripts to run a demonstration environment using Kong in DB LESS mode and Hashicorp Vault
+- `Dockerfile` and `docker-compose.yml`: scripts to run a demonstration environment using Kong in DB LESS mode, a local HTTPBIN server and a Hashicorp Vault instance with TOTP enabled
 
 ## Rockspec Format
 

@@ -86,7 +86,7 @@ IMPORTANT: it is required to configure body_code_location OR header_code_locatio
 docker-compose up --build
 ```
 
-<add prints with the CLI after the container is running>
+![kong/images/img.png](kong/images/img.png)
 
 ### Importing the POSTMAN collection and test the plugin
 

@@ -105,7 +105,9 @@ Import the collection (json file located in the postman folder) in Postman, and 
 
 ![postman/images/img_1.png](postman/images/img_1.png)
 
+![postman/images/img_2.png](postman/images/img_2.png)
 
+![postman/images/img_3.png](postman/images/img_3.png)
 
 ## TODO List
 

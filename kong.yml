@@ -15,13 +15,20 @@ services:
       vault_token: root
       body_code_location: mfa.code
   routes:
-  - name: my-route
-    regex_priority: 200
+  - name: my-route-anything
+    #regex_priority: 200
     strip_path: false
-    methods: [POST]
+    methods: [POST, GET]
     protocols: [http]
     paths:
     - /anything
+  - name: my-route-image
+    #regex_priority: 201
+    strip_path: false
+    methods: [GET]
+    protocols: [http]
+    paths:
+    - /image
 - name: vault-service
   url: http://192.168.1.117:9090
   retries: 0

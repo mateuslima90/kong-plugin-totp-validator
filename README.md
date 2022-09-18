@@ -16,7 +16,7 @@ Username and password arent enough to guarantee security, so it is common to add
 TOTP means time based one-time password, and is a common form of two-factor authentication. Unique numeric passwords are generated with an
 algorithm that uses the current time as the input. Time-based passwords expire, and therefore offer greater security for 2FA or MFA.
 
-![Image source arengu.com](kong/images/otp.png)
+![Image source arengu.com](kong/images/otp2.png)
 
 Image Source: https://www.arengu.com/blog/hotp-vs-otp-vs-totp-differences
 

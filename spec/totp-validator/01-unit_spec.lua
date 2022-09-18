@@ -1,6 +1,5 @@
 local PLUGIN_NAME = "totp-validator"
 
-
 -- helper function to validate data against a schema
 local validate do
   local validate_entity = require("spec.helpers").validate_plugin_config_schema
@@ -11,18 +10,26 @@ local validate do
   end
 end
 
-
 describe(PLUGIN_NAME .. ": (schema)", function()
-
 
   it("totp validator with required attributes", function()
     local ok, err = validate({
       backend_url = "localhost:9090",
       backend_path = "/generate",
+      body_code_location = "mfa.code",
     })
     assert.is_nil(err)
     assert.is_truthy(ok)
   end)
+
+  it("totp validator without all the required attributes", function()
+      local ok, err = validate({
+        backend_url = "localhost:9090",
+        backend_path = "/generate",
+      })
+      assert.is_not_nil(err)
+      assert.is_falsy(ok)
+    end)
 
   --it("does not accept identical request_header and response_header", function()
   --  local ok, err = validate({

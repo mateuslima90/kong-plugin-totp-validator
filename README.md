@@ -119,4 +119,4 @@ This plugin is still evolving, and the next features planned are:
 
 ## Credits
 
-made with :heart: by Marcelo Bezerra (linkedin profile link) and Mateus Fonseca (linkedin profile link)
+made with :heart: by Marcelo Bezerra (https://www.linkedin.com/in/bovino/) and Mateus Fonseca (https://www.linkedin.com/in/mateus-lima-fonseca/)

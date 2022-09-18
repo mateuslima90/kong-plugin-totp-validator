@@ -113,9 +113,10 @@ This plugin is still evolving, and the next features planned are:
 
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send an OTP code
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send a VALID OTP code
-- configurations to allows customizations of the error messages and body formats returns by the plugin in the fail cenarios
+- configurations to allows customizations of the error messages and body formats returns by the plugin in the fail scenarios
 - improve the Docker script, to test this plugin with others TOTPs providers
 - add more test cases
+- add more resiliency in the communication beetwen the kong plugin and the OT`P provider (better error handling and some retry logic)
 
 ## Credits
 

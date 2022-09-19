@@ -1,0 +1,190 @@
+{
+	"info": {
+		"_postman_id": "8794f7ff-8e0f-45d9-b0bf-d52530d6b442",
+		"name": "kong-vault-totp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4604253"
+	},
+	"item": [
+		{
+			"name": "vault-totp-create-user",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-vault-token",
+						"value": "root",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"generate\": true,\n    \"exported\": true,\n    \"issuer\": \"vault\",\n    \"account_name\": \"mateus\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8200/v1/totp/keys/user-mateus",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8200",
+					"path": [
+						"v1",
+						"totp",
+						"keys",
+						"user-mateus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vault-totp-generate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.64.2:8200/v1/totp/code/user-mateus",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"64",
+						"2"
+					],
+					"port": "8200",
+					"path": [
+						"v1",
+						"totp",
+						"code",
+						"user-mateus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vault-totp-validate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-vault-token",
+						"value": "root",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"code\": \"797909\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.64.2:8200/v1/totp/code/user-mateus",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"64",
+						"2"
+					],
+					"port": "8200",
+					"path": [
+						"v1",
+						"totp",
+						"code",
+						"user-mateus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "httpbin-anything-body",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Username",
+						"value": "user-mateus",
+						"type": "text"
+					},
+					{
+						"key": "x-mfa-code",
+						"value": "656870",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"teste\": \"teste\",\n    \"mfa\": {\n        \"code\": \"123456\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:9000/anything",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"anything"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "httpbin-image-header",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Username",
+						"value": "user-mateus",
+						"type": "text"
+					},
+					{
+						"key": "x-mfa-code",
+						"value": "691533",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "image/png",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:9000/image",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"image"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

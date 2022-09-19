@@ -40,7 +40,6 @@ services:
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -dev -dev-listen-address=0.0.0.0:8200
-    command: vault secrets enable totp
 
   #Init totp engine from vault
   vault-init-totp:
@@ -50,6 +49,8 @@ services:
       - VAULT_TOKEN=root
     depends_on:
       - vault
+    cap_add:
+      - IPC_LOCK
     command: vault secrets enable totp
 
   httpbin:

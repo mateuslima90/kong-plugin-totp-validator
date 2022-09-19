@@ -84,6 +84,37 @@ function plugin:access(plugin_conf)
   kong.log("phase access custom")
   kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
 
+  if kong.request.get_method() == "GET" then
+
+    local username = kong.request.get_header("Username")
+    local header_code_location = plugin_conf.header_code_location
+
+    kong.log.inspect(kong.request.get_header(header_code_location))
+    -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)
+    if header_code_location ~= nil then
+      kong.log.inspect(kong.request.get_header(header_code_location))
+      mfa_code = kong.request.get_header(header_code_location)
+    end
+
+    -- if fails here, is because i was unable to obtain code from both header and body
+    if mfa_code == nil then
+      kong.log.err("Code is nil")
+      return response_error_exit(403, "You shall not pass")
+    end
+
+    local backend_url = plugin_conf.backend_url
+    local backend_path = plugin_conf.backend_path
+    local vault_token = plugin_conf.vault_token
+    local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, mfa_code)
+
+    kong.log.inspect("ResponseTOTP: ", responseTOTP)
+
+    if responseTOTP == false or responseTOTP == nil then
+      kong.log.err("you shall not pass")
+      return response_error_exit(403, "You shall not pass! This code is not valid!")
+    end
+  end
+
   if kong.request.get_method() == "POST" then
 
     local username = kong.request.get_header("Username")
@@ -99,9 +130,6 @@ function plugin:access(plugin_conf)
     if err == nil then
 
       local body_code_location = plugin_conf.body_code_location
-      local header_code_location = plugin_conf.header_code_location
-
-      local mfa_code = nil
 
       -- if the code is from body, validate it
       if body_code_location ~= nil then
@@ -111,18 +139,15 @@ function plugin:access(plugin_conf)
         -- playing with loadstring to allow body.level1.level2.code configs
         local funcstr = "local inner_mfa_code = kong.request.get_body()." .. body_code_location .. "; return inner_mfa_code;"
         local mfa_attribution = loadstring(funcstr)
+
         mfa_code = mfa_attribution()
+
         kong.log("MFA CODE UPDATED ::: " .. mfa_code)
 
         if mfa_code == nil then
           kong.log.err("Code is nil")
           return response_error_exit(403, "You shall not pass")
         end
-      end
-
-      -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)
-      if header_code_location ~= nil then
-        mfa_code = kong.request.get_header(header_code_location)
       end
 
       -- if fails here, is because i was unable to obtain code from both header and body
@@ -147,15 +172,14 @@ function plugin:access(plugin_conf)
 end
 
 function plugin:header_filter(plugin_conf)
-
-  local header_code_location = plugin_conf.header_code_location
-  if header_code_location ~= nil then
-     local mfa_code_from_header = kong.request.get_header(header_code_location)
-     if mfa_code_from_header == nil then
-       kong.log.err("Code is nil")
-       return response_error_exit(403, "You shall not pass")
-     end
-  end
+   local header_code_location = plugin_conf.header_code_location
+   if header_code_location ~= nil then
+      local mfa_code_from_header = kong.request.get_header(header_code_location)
+      if mfa_code_from_header == nil then
+        kong.log.err("Code is nil")
+        return response_error_exit(403, "You shall not pass")
+      end
+   end
 end
 
 -- return our plugin object

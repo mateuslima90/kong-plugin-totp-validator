@@ -7,38 +7,32 @@ services:
   connect_timeout: 5000
   write_timeout: 5000
   read_timeout: 5000
-  plugins:
-  - name: kong-plugin-totp-validator
-    config:
-      backend_url: http://vault:8200
-      backend_path: /v1/totp/code
-      vault_token: root
-      body_code_location: mfa.code
   routes:
   - name: my-route-anything
-    #regex_priority: 200
+    regex_priority: 200
     strip_path: false
     methods: [POST, GET]
     protocols: [http]
     paths:
     - /anything
+    plugins:
+    - name: kong-plugin-totp-validator
+      config:
+        backend_url: http://vault:8200
+        backend_path: /v1/totp/code
+        vault_token: root
+        body_code_location: mfa.code
   - name: my-route-image
-    #regex_priority: 201
+    regex_priority: 201
     strip_path: false
     methods: [GET]
     protocols: [http]
     paths:
     - /image
-- name: vault-service
-  url: http://192.168.1.117:9090
-  retries: 0
-  connect_timeout: 5000
-  write_timeout: 5000
-  read_timeout: 5000
-  routes:
-  - name: vault-generate-totp
-    strip_path: false
-    methods: [POST]
-    protocols: [http]
-    paths:
-    - /totp/generate/(?<user>\S+)
+    plugins:
+    - name: kong-plugin-totp-validator
+      config:
+        backend_url: http://vault:8200
+        backend_path: /v1/totp/code
+        vault_token: root
+        header_code_location: x-mfa-code

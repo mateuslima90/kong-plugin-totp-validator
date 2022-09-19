@@ -3,15 +3,6 @@ version: "3.8"
 volumes:
   kong_data: {}
 
-networks:
-  kong-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.55.0/24
-          gateway: 192.168.55.1
-
 services:
   kong:
     build:
@@ -35,9 +26,6 @@ services:
       - 9001:8001
       - 9444:8444
       - 9443:8443
-    networks:
-      kong-network:
-        ipv4_address: 192.168.55.10
 
   vault:
     image: vault:1.11.3
@@ -52,29 +40,20 @@ services:
     cap_add:
       - IPC_LOCK
     entrypoint: vault server -dev -dev-listen-address=0.0.0.0:8200
-    networks:
-      kong-network:
-        ipv4_address: 192.168.55.11
 
   #Init totp engine from vault
   vault-init-totp:
     image: vault:1.11.3
     environment:
-      - VAULT_ADDR=http://192.168.55.11:8200
+      - VAULT_ADDR=http://vault:8200
       - VAULT_TOKEN=root
     depends_on:
       - vault
     cap_add:
       - IPC_LOCK
     command: vault secrets enable totp
-    networks:
-      kong-network:
-        ipv4_address: 192.168.55.14
 
   httpbin:
     image: kennethreitz/httpbin
     ports:
       - "8080:80"
-    networks:
-      kong-network:
-        ipv4_address: 192.168.55.12

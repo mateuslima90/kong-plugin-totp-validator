@@ -13,12 +13,19 @@
 
 
 local plugin = {
-  PRIORITY = 1000, -- set the plugin priority, which determines plugin execution order
+  PRIORITY = 895, -- set the plugin priority, which determines plugin execution order
   VERSION = "0.1.0", -- version in X.Y.Z format. Check hybrid-mode compatibility requirements.
 }
 
 local http = require("resty.http")
 local json = require("lunajson")
+
+
+local sub = string.sub
+local type = type
+local pairs = pairs
+local lower = string.lower
+local jwt_decoder = require "kong.plugins.jwt.jwt_parser"
 
 function plugin:init_worker()
 
@@ -77,6 +84,25 @@ local function validateCode(backend_url, backend_path, vault_token, username, co
 
 end
 
+local function getClaimsFromToken(authorization)
+  local claims = nil
+  local header = nil
+
+  if string.match(lower(kong.request.get_header("Authorization")), 'bearer') ~= nil then
+    kong.log.debug("2" ..   kong.request.get_path() )
+    local jwt, err = jwt_decoder:new((sub(authorization, 8)))
+    if err then
+      return false, { status = 401, message = "Bad token; " .. tostring(err) }
+    end
+    claims = jwt.claims
+    header = jwt.header
+
+    kong.log.inspect(claims)
+    kong.log.inspect(claims.preferred_username)
+    return claims.preferred_username
+  end
+end
+
 -- runs in the 'access_by_lua_block'
 function plugin:access(plugin_conf)
 
@@ -84,9 +110,12 @@ function plugin:access(plugin_conf)
   kong.log("phase access custom")
   kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
 
+  kong.log.inspect(kong.request.get_header("Authorization"))
+  username = getClaimsFromToken(kong.request.get_header("Authorization"))
+
   if kong.request.get_method() == "GET" then
 
-    local username = kong.request.get_header("Username")
+    -- local username = kong.request.get_header("Username")
     local header_code_location = plugin_conf.header_code_location
 
     kong.log.inspect(kong.request.get_header(header_code_location))
@@ -117,7 +146,7 @@ function plugin:access(plugin_conf)
 
   if kong.request.get_method() == "POST" then
 
-    local username = kong.request.get_header("Username")
+    -- local username = kong.request.get_header("Username")
 
     local body, err = kong.request.get_body()
 

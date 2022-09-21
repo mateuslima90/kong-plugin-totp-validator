@@ -7,6 +7,12 @@ services:
   connect_timeout: 5000
   write_timeout: 5000
   read_timeout: 5000
+  plugins:
+  - name: kong-jwt2header
+    config:
+      strip_claims: "false"
+      token_required: "true"
+    enabled: true
   routes:
   - name: my-route-anything
     regex_priority: 200
@@ -16,6 +22,11 @@ services:
     paths:
     - /anything
     plugins:
+    - name: kong-jwt2header
+      config:
+        strip_claims: "false"
+        token_required: "true"
+      enabled: true
     - name: kong-plugin-totp-validator
       config:
         backend_url: http://vault:8200

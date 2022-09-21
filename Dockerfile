@@ -28,5 +28,6 @@ RUN set -ex \
   && setcap 'cap_net_bind_service=+ep' /usr/local/openresty/nginx/sbin/nginx
 
 RUN luarocks install lunajson
+RUN luarocks install kong-jwt2header
 ENV term xterm
 RUN apk add --update vim nano

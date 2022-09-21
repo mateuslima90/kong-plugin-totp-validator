@@ -49,6 +49,7 @@ The `.rockspec` file should follow [LuaRocks' conventions](https://github.com/lu
 
 Configure this plugin on a Service with the declarative configuration:
 
+Receiving otp code in the body
 ```bash
 _format_version: "2.1"
 _transform: true
@@ -66,6 +67,26 @@ services:
       backend_path: /v1/totp/code
       vault_token: root
       body_code_location: mfa.code
+```
+
+Receiving otp code in the header
+```bash
+_format_version: "2.1"
+_transform: true
+services:
+- name: httpbin-service
+  url: http://httpbin:80
+  retries: 0
+  connect_timeout: 5000
+  write_timeout: 5000
+  read_timeout: 5000
+  plugins:
+  - name: kong-plugin-totp-validator
+    config:
+      backend_url: http://vault:8200
+      backend_path: /v1/totp/code
+      vault_token: root
+      header_code_location: x-mfa-code
 ```
 
 You can also configure the plugin directly in a route or using the Kong Admin API when not running Kong in DBLESS mode.
@@ -105,13 +126,19 @@ Import the collection (json file located in the postman folder) in Postman, and 
 - make a request to a route, passing a validated OTP code that will be accepted by tha vault and will result in a 200 HTTP status code
 - make a request to a route, passing a non-validated OTP code that will be rejected by tha vault and notice that the request will fail and return 403 status code
 
-![postman/images/img.png](postman/images/img.png)
+![postman/images/create_user_vault.png](postman/images/images/create_user_vault.png)
 
-![postman/images/img_1.png](postman/images/img_1.png)
+![postman/images/generate_totp.png](postman/images/images/generate_totp.png)
 
-![postman/images/img_2.png](postman/images/img_2.png)
+![postman/images/validate_totp.png](postman/images/images/validate_totp.png)
 
-![postman/images/img_3.png](postman/images/img_3.png)
+![postman/images/route_image_403](postman/images/images/route_image_403.png)
+
+![postman/images/route_image_200](postman/images/images/route_image_200.png)
+
+![postman/images/route_anything_403](postman/images/images/route_anything_403.png)
+
+![postman/images/route_anything_200](postman/images/images/route_anything_200.png)
 
 ## TODO List
 
@@ -122,7 +149,8 @@ This plugin is still evolving, and the next features planned are:
 - configurations to allows customizations of the error messages and body formats returns by the plugin in the fail scenarios
 - improve the Docker script, to test this plugin with others TOTPs providers
 - add more test cases
-- add resiliency in the communication beetwen the kong plugin and the OT`P provider (better error handling and some retry logic inspired by Iguana Tools: https://help.interfaceware.com/v6/retry-example)
+- add resiliency in the communication between the kong plugin and the OTP provider (better error handling and some retry logic inspired by Iguana Tools: https://help.interfaceware.com/v6/retry-example)
+- accepted GRPC protocol
 
 ## Credits
 

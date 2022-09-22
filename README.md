@@ -126,19 +126,19 @@ Import the collection (json file located in the postman folder) in Postman, and 
 - make a request to a route, passing a validated OTP code that will be accepted by tha vault and will result in a 200 HTTP status code
 - make a request to a route, passing a non-validated OTP code that will be rejected by tha vault and notice that the request will fail and return 403 status code
 
-![postman/images/create_user_vault.png](postman/images/images/create_user_vault.png)
+![postman/images/create_user_vault.png](postman/images/create_user_vault.png)
 
-![postman/images/generate_totp.png](postman/images/images/generate_totp.png)
+![postman/images/generate_totp.png](postman/images/generate_totp.png)
 
-![postman/images/validate_totp.png](postman/images/images/validate_totp.png)
+![postman/images/validate_totp.png](postman/images/validate_totp.png)
 
-![postman/images/route_image_403](postman/images/images/route_image_403.png)
+![postman/images/route_image_403](postman/images/route_image_403.png)
 
-![postman/images/route_image_200](postman/images/images/route_image_200.png)
+![postman/images/route_image_200](postman/images/route_image_200.png)
 
-![postman/images/route_anything_403](postman/images/images/route_anything_403.png)
+![postman/images/route_anything_403](postman/images/route_anything_403.png)
 
-![postman/images/route_anything_200](postman/images/images/route_anything_200.png)
+![postman/images/route_anything_200](postman/images/route_anything_200.png)
 
 ## TODO List
 

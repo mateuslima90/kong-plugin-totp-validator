@@ -2,6 +2,12 @@
 
 # Kong-plugin-totp-validator
 
+## Presentation
+
+Slide presentation about this opensource plugin: https://docs.google.com/presentation/d/14WFGPD53HxOksOrHuONl8-0Xh-XWyW83TkNWGYdrBQY/edit?usp=sharing
+
+## About this project
+
 This project is a Lua-based plugin for Kong API Gateway that allows you to define routes and services that requires a valid TOTP code.
 
 The plugins works by intercepting the requests being made and confirmating (with HTTP requests to a TOTP provider like Hashicorp Vault)

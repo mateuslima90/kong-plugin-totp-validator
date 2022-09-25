@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8794f7ff-8e0f-45d9-b0bf-d52530d6b442",
+		"_postman_id": "51708640-7c53-4a81-98a2-b9a08013ccfa",
 		"name": "kong-vault-totp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "4604253"
+		"_exporter_id": "16992710"
 	},
 	"item": [
 		{
@@ -47,31 +47,6 @@
 			"name": "vault-totp-generate",
 			"request": {
 				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://192.168.64.2:8200/v1/totp/code/user-mateus",
-					"protocol": "http",
-					"host": [
-						"192",
-						"168",
-						"64",
-						"2"
-					],
-					"port": "8200",
-					"path": [
-						"v1",
-						"totp",
-						"code",
-						"user-mateus"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "vault-totp-validate",
-			"request": {
-				"method": "POST",
 				"header": [
 					{
 						"key": "x-vault-token",
@@ -79,23 +54,11 @@
 						"type": "text"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"code\": \"797909\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "http://192.168.64.2:8200/v1/totp/code/user-mateus",
+					"raw": "http://localhost:8200/v1/totp/code/user-mateus",
 					"protocol": "http",
 					"host": [
-						"192",
-						"168",
-						"64",
-						"2"
+						"localhost"
 					],
 					"port": "8200",
 					"path": [
@@ -127,7 +90,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"teste\": \"teste\",\n    \"mfa\": {\n        \"code\": \"123456\"\n    }\n}",
+					"raw": "{\n    \"teste\": \"teste\",\n    \"mfa\": {\n        \"code\": \"306925\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -164,7 +127,7 @@
 					},
 					{
 						"key": "x-mfa-code",
-						"value": "691533",
+						"value": "306925",
 						"type": "text"
 					},
 					{

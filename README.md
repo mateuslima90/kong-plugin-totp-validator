@@ -2,9 +2,11 @@
 
 # Kong-plugin-totp-validator
 
-## Presentation
+## Presentation and demo
 
 Slide presentation about this opensource plugin: https://docs.google.com/presentation/d/14WFGPD53HxOksOrHuONl8-0Xh-XWyW83TkNWGYdrBQY/edit?usp=sharing
+
+Video presentation and demo of the plugin: https://drive.google.com/file/d/1J0sgv9Bo5v6luGY3RIGbnlr6VWxKnzcF/view?usp=sharinghttps://drive.google.com/file/d/1J0sgv9Bo5v6luGY3RIGbnlr6VWxKnzcF/view?usp=sharing
 
 ## About this project
 
@@ -155,6 +157,9 @@ This plugin is still evolving, and the next features planned are:
 - add more test cases
 - add resiliency in the communication between the kong plugin and the OTP provider (better error handling and some retry logic inspired by Iguana Tools: https://help.interfaceware.com/v6/retry-example)
 - accepted GRPC protocol
+- add a insomnia collection alongside with postman
+- add more details at the documentation about the TOTP server provided in the docker compose script
+- publish a release of the plugin at luarocks.org
 
 ## Credits
 

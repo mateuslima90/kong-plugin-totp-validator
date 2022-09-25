@@ -136,8 +136,6 @@ Import the collection (json file located in the postman folder) in Postman, and 
 
 ![postman/images/generate_totp.png](postman/images/generate_totp.png)
 
-![postman/images/validate_totp.png](postman/images/validate_totp.png)
-
 ![postman/images/route_image_403](postman/images/route_image_403.png)
 
 ![postman/images/route_image_200](postman/images/route_image_200.png)

@@ -15,7 +15,7 @@ This project is a Lua-based plugin for Kong API Gateway that allows you to defin
 The plugins works by intercepting the requests being made and confirmating (with HTTP requests to a TOTP provider like Hashicorp Vault)
 if the code was provided in the defined location (body or header) and if the code provided was already validated by the user.
 
-This plugin was developed and tested under Kong 2.8.1, but it should work on newer releases incluing the new 3.0.0 release.
+This plugin was developed and tested under Kong 2.8.1 AND tested with the new 3.0.0 release.
 
 ## The Problem
 
@@ -145,6 +145,8 @@ Import the collection (json file located in the postman folder) in Postman, and 
 ![postman/images/route_anything_403](postman/images/route_anything_403.png)
 
 ![postman/images/route_anything_200](postman/images/route_anything_200.png)
+
+![img.png](img.png)
 
 ## TODO List
 

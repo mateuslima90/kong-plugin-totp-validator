@@ -8,36 +8,39 @@ echo '_format_version: "2.1"
 _transform: true
 services:
 - name: httpbin-service
-  url: http://httpbin.org
+  url: http://httpbin:80
   retries: 0
   connect_timeout: 5000
   write_timeout: 5000
   read_timeout: 5000
-  plugins:
-  - name: kong-plugin-totp-validator
-    config:
-      backend_url: http://192.168.1.117:9090
-      backend_path: /totp/validate
   routes:
-  - name: my-route
+  - name: my-route-anything
     regex_priority: 200
     strip_path: false
-    methods: [POST]
+    methods: [POST, GET]
     protocols: [http]
     paths:
     - /anything
-- name: vault-service
-  url: http://192.168.1.117:9090
-  retries: 0
-  connect_timeout: 5000
-  write_timeout: 5000
-  read_timeout: 5000
-  routes:
-  - name: vault-generate-totp
+    plugins:
+    - name: kong-plugin-totp-validator
+      config:
+        backend_url: http://vault:8200
+        backend_path: /v1/totp/code
+        vault_token: root
+        body_code_location: mfa.code
+  - name: my-route-image
+    regex_priority: 201
     strip_path: false
-    methods: [POST]
+    methods: [GET]
     protocols: [http]
     paths:
-    - /totp/generate/(?<user>\S+)' > kong.yml
+    - /image
+    plugins:
+    - name: kong-plugin-totp-validator
+      config:
+        backend_url: http://vault:8200
+        backend_path: /v1/totp/code
+        vault_token: root
+        header_code_location: x-mfa-code' > kong.yml
 
 

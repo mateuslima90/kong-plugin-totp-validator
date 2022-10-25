@@ -89,7 +89,6 @@ function plugin:access(plugin_conf)
     local username = kong.request.get_header("Username")
     local header_code_location = plugin_conf.header_code_location
 
-    kong.log.inspect(kong.request.get_header(header_code_location))
     -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)
     if header_code_location ~= nil then
       kong.log.inspect(kong.request.get_header(header_code_location))

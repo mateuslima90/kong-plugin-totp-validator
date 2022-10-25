@@ -22,10 +22,10 @@ services:
       KONG_LOG_LEVEL: debug
       KONG_PLUGINS: bundled,kong-plugin-totp-validator
     ports:
-      - 9000:8000
-      - 9001:8001
-      - 9444:8444
-      - 9443:8443
+      - "9000:8000"
+      - "9001:8001"
+      - "9444:8444"
+      - "9443:8443"
 
   vault:
     image: vault:1.11.3

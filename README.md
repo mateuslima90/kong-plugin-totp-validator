@@ -15,6 +15,8 @@ if the code was provided in the defined location (body or header) and if the cod
 
 This plugin was developed and tested under Kong 2.8.1, but it should work on newer releases incluing the new 3.0.0 release.
 
+<b>We are testing this plugin yet, so It is possible to find some bugs. Please report bugs!</b>
+
 ## The Problem
 
 Username and password arent enough to guarantee security, so it is common to add a second factor authentication (2FA) or multiple factor authentication (MFA).
@@ -150,6 +152,7 @@ Import the collection (json file located in the postman folder) in Postman, and 
 
 This plugin is still evolving, and the next features planned are:
 
+- there is a limitation to combining body_code_location and header_code_location with HTTP methods
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send an OTP code
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send a VALID OTP code
 - configurations to allows customizations of the error messages and body formats returns by the plugin in the fail scenarios

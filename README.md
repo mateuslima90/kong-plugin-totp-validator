@@ -2,9 +2,11 @@
 
 # Kong-plugin-totp-validator
 
-## Presentation
+## Presentation and demo
 
 Slide presentation about this opensource plugin: https://docs.google.com/presentation/d/14WFGPD53HxOksOrHuONl8-0Xh-XWyW83TkNWGYdrBQY/edit?usp=sharing
+
+Video presentation and demo of the plugin: https://drive.google.com/file/d/1J0sgv9Bo5v6luGY3RIGbnlr6VWxKnzcF/view?usp=sharinghttps://drive.google.com/file/d/1J0sgv9Bo5v6luGY3RIGbnlr6VWxKnzcF/view?usp=sharing
 
 ## About this project
 
@@ -13,7 +15,7 @@ This project is a Lua-based plugin for Kong API Gateway that allows you to defin
 The plugins works by intercepting the requests being made and confirmating (with HTTP requests to a TOTP provider like Hashicorp Vault)
 if the code was provided in the defined location (body or header) and if the code provided was already validated by the user.
 
-This plugin was developed and tested under Kong 2.8.1, but it should work on newer releases incluing the new 3.0.0 release.
+This plugin was developed and tested under Kong 2.8.1 AND tested with the new 3.0.0 release.
 
 <b>We are testing this plugin yet, so It is possible to find some bugs. Please report bugs!</b>
 
@@ -138,8 +140,6 @@ Import the collection (json file located in the postman folder) in Postman, and 
 
 ![postman/images/generate_totp.png](postman/images/generate_totp.png)
 
-![postman/images/validate_totp.png](postman/images/validate_totp.png)
-
 ![postman/images/route_image_403](postman/images/route_image_403.png)
 
 ![postman/images/route_image_200](postman/images/route_image_200.png)
@@ -147,6 +147,8 @@ Import the collection (json file located in the postman folder) in Postman, and 
 ![postman/images/route_anything_403](postman/images/route_anything_403.png)
 
 ![postman/images/route_anything_200](postman/images/route_anything_200.png)
+
+![img.png](img.png)
 
 ## TODO List
 
@@ -160,6 +162,9 @@ This plugin is still evolving, and the next features planned are:
 - add more test cases
 - add resiliency in the communication between the kong plugin and the OTP provider (better error handling and some retry logic inspired by Iguana Tools: https://help.interfaceware.com/v6/retry-example)
 - accepted GRPC protocol
+- add a insomnia collection alongside with postman
+- add more details at the documentation about the TOTP server provided in the docker compose script
+- publish a release of the plugin at luarocks.org
 
 ## Credits
 

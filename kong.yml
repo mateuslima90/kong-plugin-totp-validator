@@ -25,8 +25,8 @@ services:
   - name: my-route-image
     regex_priority: 201
     strip_path: false
-    methods: [GET]
-    protocols: [http]
+    methods: [ GET ]
+    protocols: [ http ]
     paths:
     - /image
     plugins:

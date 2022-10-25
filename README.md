@@ -152,7 +152,7 @@ Import the collection (json file located in the postman folder) in Postman, and 
 
 This plugin is still evolving, and the next features planned are:
 
-- there is a limitation to combining body_code_location and header_code_location with HTTP methods
+- add support to all http methods for body_code_location or header_code_location
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send an OTP code
 - a configuration to allows the definition of the HTTP status code to be returned in case the user does not send a VALID OTP code
 - configurations to allows customizations of the error messages and body formats returns by the plugin in the fail scenarios

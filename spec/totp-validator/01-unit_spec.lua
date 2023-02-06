@@ -16,6 +16,7 @@ describe(PLUGIN_NAME .. ": (schema)", function()
     local ok, err = validate({
       backend_url = "localhost:9090",
       backend_path = "/generate",
+      vault_token = "root",
       body_code_location = "mfa.code",
     })
     assert.is_nil(err)

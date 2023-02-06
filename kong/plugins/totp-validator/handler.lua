@@ -77,46 +77,23 @@ local function validateCode(backend_url, backend_path, vault_token, username, co
 
 end
 
--- runs in the 'access_by_lua_block'
-function plugin:access(plugin_conf)
-
-  -- your custom code here
-  kong.log("phase access custom")
-  kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
+local function checkCodeCameFrom(plugin_conf)
 
   if kong.request.get_method() == "GET" then
 
-    local username = kong.request.get_header("Username")
     local header_code_location = plugin_conf.header_code_location
     local mfa_code = ''
-    -- if the code is from header, get it (no need to validate it, because it is already being validated on plugin:header_filter function)
+
     if header_code_location ~= nil then
       kong.log.inspect(kong.request.get_header(header_code_location))
       mfa_code = kong.request.get_header(header_code_location)
+
+      return mfa_code
     end
-
-    -- if fails here, is because i was unable to obtain code from both header and body
-    if mfa_code == nil then
-      kong.log.err("Code is nil")
-      return response_error_exit(403, "You shall not pass")
-    end
-
-    local backend_url = plugin_conf.backend_url
-    local backend_path = plugin_conf.backend_path
-    local vault_token = plugin_conf.vault_token
-    local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, mfa_code)
-
-    kong.log.inspect("ResponseTOTP: ", responseTOTP)
-
-    if responseTOTP == false or responseTOTP == nil then
-      kong.log.err("you shall not pass")
-      return response_error_exit(403, "You shall not pass! This code is not valid!")
-    end
-  end
-
-  if kong.request.get_method() == "POST" then
-
-    local username = kong.request.get_header("Username")
+  elseif kong.request.get_method() == "POST" or
+    kong.request.get_method() == "PUT" or
+    kong.request.get_method() == "PATCH" or
+    kong.request.get_method() == "DELETE" then
 
     local body, err = kong.request.get_body()
 
@@ -127,19 +104,12 @@ function plugin:access(plugin_conf)
     end
 
     if err == nil then
-
       local body_code_location = plugin_conf.body_code_location
       local mfa_code = ''
       -- if the code is from body, validate it
       if body_code_location ~= nil then
-        kong.log(" Body sent ::: ")
-        kong.log.inspect(body)
-
         -- playing with loadstring to allow body.level1.level2.code configs
         local funcstr = "local inner_mfa_code = kong.request.get_body()." .. body_code_location .. "; return inner_mfa_code;"
-
-        -- local mfa_attribution = loadstring(funcstr)
-        -- mfa_code = mfa_attribution()
 
         local result, vars = pcall(loadstring(funcstr))
         mfa_code = tonumber(vars)
@@ -147,26 +117,41 @@ function plugin:access(plugin_conf)
           -- `loadstring(funcstr)' raised an error: take appropriate actions
           return response_error_exit(403, "You shall not pass")
         end
-      end
-      
-      -- if fails here, is because i was unable to obtain code from both header and body
-      if mfa_code == nil or mfa_code == {} then
-        kong.log.err("Code is nil")
-        return response_error_exit(403, "You shall not pass")
-      end
-
-      local backend_url = plugin_conf.backend_url
-      local backend_path = plugin_conf.backend_path
-      local vault_token = plugin_conf.vault_token
-      local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, mfa_code)
-
-      kong.log.inspect("ResponseTOTP: ", responseTOTP)
-
-      if responseTOTP == false or responseTOTP == nil then
-        kong.log.err("you shall not pass")
-        return response_error_exit(403, "You shall not pass! This code is not valid!")
+        return mfa_code
       end
     end
+  end
+end
+
+
+-- runs in the 'access_by_lua_block'
+function plugin:access(plugin_conf)
+
+  -- your custom code here
+  kong.log("phase access custom")
+  kong.log.inspect(plugin_conf)   -- check the logs for a pretty-printed config!
+
+  local mfa_code = checkCodeCameFrom(plugin_conf)
+
+  -- TODO: It needs to validate username value
+  local username = kong.request.get_header("Username")
+
+  -- if fails here, is because i was unable to obtain code from both header and body
+  if mfa_code == nil or mfa_code == {} then
+    kong.log.err("Code is nil")
+    return response_error_exit(403, "You shall not pass")
+  end
+
+  local backend_url = plugin_conf.backend_url
+  local backend_path = plugin_conf.backend_path
+  local vault_token = plugin_conf.vault_token
+  local responseTOTP = validateCode(backend_url, backend_path, vault_token, username, mfa_code)
+
+  kong.log.inspect("ResponseTOTP: ", responseTOTP)
+
+  if responseTOTP == false or responseTOTP == nil then
+    kong.log.err("you shall not pass")
+    return response_error_exit(403, "You shall not pass! This code is not valid!")
   end
 end
 

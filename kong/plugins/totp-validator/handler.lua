@@ -88,7 +88,7 @@ local function checkCodeCameFrom(plugin_conf)
       kong.log.inspect(kong.request.get_header(header_code_location))
       mfa_code = kong.request.get_header(header_code_location)
 
-      return mfa_code
+      return tonumber(mfa_code)
     end
   elseif kong.request.get_method() == "POST" or
     kong.request.get_method() == "PUT" or
@@ -120,9 +120,9 @@ local function checkCodeCameFrom(plugin_conf)
         return mfa_code
       end
     end
+
   end
 end
-
 
 -- runs in the 'access_by_lua_block'
 function plugin:access(plugin_conf)
